@@ -68,23 +68,24 @@ long helpers::validarLong(){
  }
 
  void modificarRegistro (int eleccionMenu){
-   int auxId = 0, generadorId = 0;
-   string linea = "";
-   productos::Producto modelo;
-   ofstream archivo("database/Producto.txt", ios::binary);
+   
    switch (eleccionMenu)
    {
    case 4:
-      do{
-         cout<<"Por favor introduzca el ID del producto (maximo 5 digitos)"<<endl;
-         auxId = helper.validarInt(99999);
-         modelo = producto.getProducto(auxId);
+      producto.modificarProducto();
+      break;
+   
+   default:
+      break;
+   }
+ }
 
-         if(modelo.id != -1){
-            cout<<"Ya existe un producto con el ID especificado"<<endl;
-         }
-
-      }while(modelo.id != -1);
+ void eliminarRegistro (int eleccionMenu){
+   
+   switch (eleccionMenu)
+   {
+   case 4:
+      producto.eliminarRegistro();
       break;
    
    default:
@@ -126,8 +127,9 @@ long helpers::validarLong(){
          
          break;
       case 4: //  producto
+         cout<<""<<endl;
          cout<<"PRODUCTOS REGISTRADOS"<<endl;
-         producto.imprimirProductos();
+         producto.listarProductos();
          eleccionOpcion = subMenuAdministrador();
          switch (eleccionOpcion)
          {
@@ -135,6 +137,10 @@ long helpers::validarLong(){
             agregarRegistro(eleccionMenu);
             break;
          
+         case 2:
+            modificarRegistro(eleccionMenu);
+            break;
+
          default:
             break;
          }

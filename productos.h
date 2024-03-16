@@ -14,6 +14,7 @@ helpers helper;
 class productos{
 
    public:
+   int auxPosicionProducto = 0;
 
    struct Producto
  {
@@ -23,15 +24,6 @@ class productos{
    float precio = -1;
    char description[45] = "";
    int stock_min = -1;
-
-   Producto(){
-      int id = -1;
-      int id_proveedor = -1;
-      int stock = -1;
-      float precio = -1;
-      char description[45] = "";
-      int stock_min = -1;
-   }
  };
  
    int cantidadProducto(){
@@ -58,15 +50,16 @@ class productos{
             e.seekg(i * sizeof(productos::Producto));
             e.read((char*)&auxiliar, sizeof(productos::Producto));
             if(auxiliar.id == _id){
+               auxPosicionProducto = i;
                return auxiliar;
             }
          }
-         auxiliar = productos::Producto();
+         auxiliar.id = -1;
          return auxiliar;
       }
    }
 
-   void imprimirProductos(){
+   void listarProductos(){
       ifstream archivo("database/Producto.txt", ios::binary);
       if (!archivo) {
          cerr << "No se pudo abrir el archivo.\n";
@@ -74,8 +67,10 @@ class productos{
       Producto producto;
 
       while (archivo.read((char*)&producto, sizeof(productos::Producto))) {
-         cout << "ID del producto: " << producto.id << "\n";
-         cout << "DESCRIPCION del producto: " << producto.description << "\n";
+         cout<<""<<endl;
+         cout << "ID--------------------" << producto.id << "\n";
+         cout << "DESCRIPCION-----------" << producto.description << "\n";
+         cout <<"____________________________________________________________"<<endl;
       }
       archivo.close();
    }
@@ -111,15 +106,82 @@ class productos{
          cin>>modelo.stock_min;
 
          if (!archivo) {
-            std::cerr << "No se pudo abrir el archivo para escritura.\n";
+            cerr << "No se pudo abrir el archivo para escritura.\n";
          }else{
             archivo.write((char*)&modelo, sizeof(productos::Producto));
             archivo.close();
          }
    }
 
-   void modificarProducto(){
-      
+   void imprimirProducto(Producto producto){
+      cout <<"ID: "<< producto.id << endl;
+      cout <<"ID proveedor: "<< producto.id_proveedor << endl;
+      cout <<"Stock: "<< producto.stock << endl;
+      cout <<"Precio: "<< producto.precio << endl;
+      cout <<"Descripcion: "<< producto.description << endl;
+      cout <<"Stock minimo: "<< producto.stock_min << endl;
+      cout<<""<<endl;
    }
 
+   void modificarProducto(){
+      string linea = "";
+      Producto modelo;
+      int auxId = 0, generadorId = 0, cambioPropiedad = 0;
+      fstream archivo("database/Producto.txt", ios::out | ios::in | ios::binary); 
+      do{
+         cout<<"Por favor introduzca el ID del producto (maximo 5 digitos)"<<endl;
+         auxId = helper.validarInt(99999);
+         modelo = getProducto(auxId);
+
+         if(modelo.id == -1){
+            cout<<"No existe un producto con el ID especificado"<<endl;
+         }
+      }while(modelo.id == -1);
+
+      do{
+         imprimirProducto(modelo);
+         cout<<"Seleccione la opcion que desee cambiar:"<<endl;
+         cout <<"1. ID proveedor" << endl;
+         cout <<"2. Stock"<< endl;
+         cout <<"3. Precio"<< endl;
+         cout <<"4. Descripcion"<< endl;
+         cout <<"5. Stock minimo"<< endl;
+         cout <<"6. Terminar proceso"<< endl;
+         cout <<"Respuesta: ";
+         cin >> cambioPropiedad;
+         cout<<""<<endl;
+
+         if(cambioPropiedad == 1){
+            cout<<"ID del proveedor: ";
+            cin>> modelo.id_proveedor;
+         }else if(cambioPropiedad == 2){
+            cout<<"Stock: ";
+            cin>> modelo.stock;
+         }else if(cambioPropiedad == 3){
+            cout<<"Precio: ";
+            cin>> modelo.precio;
+         }else if(cambioPropiedad == 4){
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout<<"Descripcion: ";
+            getline(cin, linea);
+            strcpy(modelo.description, linea.c_str());
+         }else if(cambioPropiedad == 5){
+            cout<<"Stock minimo: ";
+            cin>> modelo.stock_min;
+         }
+
+      }while(cambioPropiedad != 6);
+
+      if (!archivo) {
+         cerr << "No se pudo abrir el archivo para escritura.\n";
+      }else{
+         archivo.seekg(auxPosicionProducto * sizeof(Producto));
+         archivo.write((char*)&modelo, sizeof(Producto));
+         archivo.close();
+      }
+   }
+
+   void eliminarRegistro(){
+
+   }
 };
