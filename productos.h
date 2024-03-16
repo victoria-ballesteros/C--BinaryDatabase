@@ -14,6 +14,7 @@ helpers helper;
 class productos{
 
    public:
+   
    int auxPosicionProducto = 0;
 
    struct Producto
@@ -27,7 +28,7 @@ class productos{
  };
  
    int cantidadProducto(){
-   ifstream archivo("database/Producto.txt", ios::binary | ios::ate);
+   ifstream archivo("database/Producto.bin", ios::binary | ios::ate);
     if (!archivo) {
         std::cerr << "No se pudo abrir el archivo.\n";
         archivo.close();
@@ -41,7 +42,7 @@ class productos{
  }
 
    Producto getProducto(int _id){
-      fstream e("database/Producto.txt", ios::out | ios::in | ios::binary);
+      fstream e("database/Producto.bin", ios::out | ios::in | ios::binary);
       int i = 0;
       productos::Producto auxiliar;
       if(e.is_open()){
@@ -60,7 +61,7 @@ class productos{
    }
 
    void listarProductos(){
-      ifstream archivo("database/Producto.txt", ios::binary);
+      ifstream archivo("database/Producto.bin", ios::binary);
       if (!archivo) {
          cerr << "No se pudo abrir el archivo.\n";
       }
@@ -68,8 +69,8 @@ class productos{
 
       while (archivo.read((char*)&producto, sizeof(productos::Producto))) {
          cout<<""<<endl;
-         cout << "ID--------------------" << producto.id << "\n";
-         cout << "DESCRIPCION-----------" << producto.description << "\n";
+         cout << "ID--------------------: " << producto.id << "\n";
+         cout << "DESCRIPCION-----------: " << producto.description << "\n";
          cout <<"____________________________________________________________"<<endl;
       }
       archivo.close();
@@ -78,8 +79,12 @@ class productos{
    void registrarProducto(){
       int auxId = 0, generadorId = 0;
       string linea = "";
-      productos::Producto modelo;
-      ofstream archivo("database/Producto.txt", ios::binary);
+      Producto modelo;
+
+       fstream archivo("database/Producto.bin", ios::out);
+       archivo.close();
+
+      ofstream archivo("database/Producto.bin", ios::binary);
       do{
          cout<<"Por favor introduzca el ID del producto (maximo 5 digitos)"<<endl;
          auxId = helper.validarInt(99999);
@@ -127,7 +132,7 @@ class productos{
       string linea = "";
       Producto modelo;
       int auxId = 0, generadorId = 0, cambioPropiedad = 0;
-      fstream archivo("database/Producto.txt", ios::out | ios::in | ios::binary); 
+      fstream archivo("database/Producto.bin", ios::out | ios::in | ios::binary); 
       do{
          cout<<"Por favor introduzca el ID del producto (maximo 5 digitos)"<<endl;
          auxId = helper.validarInt(99999);
@@ -182,6 +187,38 @@ class productos{
    }
 
    void eliminarRegistro(){
+    int auxId = 0;
+    Producto modelo;
+    Producto reemplazo;
+    fstream archivoOriginal("database/Producto.bin", ios::out | ios::in | ios::binary);
+   
+    fstream archivoTemporal("database/ProductoTemp.bin", ios::out);
+    archivoTemporal.close();
 
-   }
+    archivoTemporal.open("database/ProductoTemp.bin", ios::in | ios::out | ios::binary);
+
+    do{
+        cout<<"Por favor introduzca el ID del producto (maximo 5 digitos)"<<endl;
+        auxId = helper.validarInt(99999);
+        modelo = getProducto(auxId);
+
+        if(modelo.id == -1){
+            cout<<"No existe un producto con el ID especificado"<<endl;
+        }
+
+    }while(modelo.id == -1);
+
+    while (archivoOriginal.read((char*)&reemplazo, sizeof(Producto))) {
+        if (reemplazo.id != modelo.id) {
+            archivoTemporal.write((char*)&reemplazo, sizeof(Producto));
+        }
+    }
+
+    archivoOriginal.close();
+    archivoTemporal.close();
+
+    remove("database/Producto.bin");
+    rename("database/ProductoTemp.bin", "database/Producto.bin");
+}
+
 };

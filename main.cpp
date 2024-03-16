@@ -141,6 +141,10 @@ long helpers::validarLong(){
             modificarRegistro(eleccionMenu);
             break;
 
+         case 3:
+            eliminarRegistro(eleccionMenu);
+            break;
+
          default:
             break;
          }
