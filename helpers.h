@@ -16,6 +16,8 @@ long validarLong();
 
 int validarInt(int maximo);
 
+int validarIntSinLimite();
+
 };
 
 #endif
