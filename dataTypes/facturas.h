@@ -21,22 +21,22 @@ class facturas: public registro {
       Factura factura;
 
       while (archivo.read((char*)&factura, sizeof(Factura))) {
-        cout<<""<<endl;
+        cout<<""<<'\n';
         cout << "ID--------------------: " << factura.id << "\n";
         cout << "FECHA-----------------: " << factura.fecha << "\n";
         cout << "CLIENTE---------------: " << factura.id_cliente << "\n";
-        cout <<"____________________________________________________________"<<endl;
-        cout<<""<<endl;
+        cout <<"____________________________________________________________"<<'\n';
+        cout<<""<<'\n';
       }
       archivo.close();
    }
 
    void imprimirFactura (Factura factura){
-        cout <<"ID--------------: "<< factura.id << endl;
+        cout <<"ID--------------: "<< factura.id << '\n';
         cout <<"FECHA-----------: " << factura.fecha << "\n";
         cout <<"CLIENTE---------: " << factura.id_cliente << "\n";
-        cout <<"____________________________________________________________"<<endl;
-        cout<<""<<endl;
+        cout <<"____________________________________________________________"<<'\n';
+        cout<<""<<'\n';
    }
 
    void registrarFactura (){
@@ -46,15 +46,15 @@ class facturas: public registro {
         ofstream archivo("database/Factura.bin", ios::app | ios::binary);
 
         do{
-            cout<<"Por favor introduzca el ID de la factura (maximo 5 digitos):"<<endl;
+            cout<<"Por favor introduzca el ID de la factura (maximo 5 digitos):"<<'\n';
             auxId = helper.validarInt(99999);
             modelo = getFactura(auxId);
             if(modelo.id != -1){
-            cout<<"Ya existe una factura con el ID especificado"<<endl;
+            cout<<"Ya existe una factura con el ID especificado"<<'\n';
             }
 
         }while(modelo.id != -1);
-            cout<<"Por favor introduzca la informacion solicitada a continuacion:"<<endl;
+            cout<<"Por favor introduzca la informacion solicitada a continuacion:"<<'\n';
             modelo.id = auxId;
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout<<"Id del cliente: ";
@@ -76,24 +76,24 @@ class facturas: public registro {
       int auxId = 0, generadorId = 0, cambioPropiedad = 0;
       fstream archivo("database/Factura.bin", ios::out | ios::in | ios::binary); 
       do{
-         cout<<"Por favor introduzca el ID de la factura (maximo 5 digitos)"<<endl;
+         cout<<"Por favor introduzca el ID de la factura (maximo 5 digitos)"<<'\n';
          auxId = helper.validarInt(99999);
          modelo = getFactura(auxId);
 
          if(modelo.id == -1){
-            cout<<"No existe una factura con el ID especificado"<<endl;
+            cout<<"No existe una factura con el ID especificado"<<'\n';
          }
       }while(modelo.id == -1);
 
       do{
          imprimirFactura(modelo);
-         cout<<"Seleccione la opcion que desee cambiar:"<<endl;
-         cout <<"1. ID del cliente asociado" << endl;
-         cout <<"2. Fecha"<< endl;
-         cout <<"3. Salir"<< endl;
+         cout<<"Seleccione la opcion que desee cambiar:"<<'\n';
+         cout <<"1. ID del cliente asociado" << '\n';
+         cout <<"2. Fecha"<< '\n';
+         cout <<"3. Salir"<< '\n';
          cout <<"Respuesta: ";
          cambioPropiedad = helper.validarInt(3);
-         cout<<""<<endl;
+         cout<<""<<'\n';
 
          if(cambioPropiedad == 1){
             cout<<"Id del cliente asociado: ";
@@ -126,12 +126,12 @@ class facturas: public registro {
         archivoTemporal.open("database/FacturaTemp.bin", ios::in | ios::out | ios::binary);
 
         do{
-            cout<<"Por favor introduzca el ID de la factura (maximo 5 digitos)"<<endl;
+            cout<<"Por favor introduzca el ID de la factura (maximo 5 digitos)"<<'\n';
             auxId = helper.validarInt(99999);
             modelo = getFactura(auxId);
 
             if(modelo.id == -1){
-                cout<<"No existe una factura con el ID especificado"<<endl;
+                cout<<"No existe una factura con el ID especificado"<<'\n';
             }
 
         }while(modelo.id == -1);
@@ -149,4 +149,13 @@ class facturas: public registro {
         rename("database/FacturaTemp.bin", "database/Factura.bin");
     }
 
+   void registrarFacturaDirecta(Factura factura){
+      ofstream archivo("database/Factura.bin", ios::app | ios::binary);
+      if (!archivo) {
+                cerr << "No se pudo abrir el archivo para escritura.\n";
+            }else{
+                archivo.write((char*)&factura, sizeof(Factura));
+                archivo.close();
+            }
+      }
 };

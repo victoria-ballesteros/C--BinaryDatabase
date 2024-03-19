@@ -162,4 +162,28 @@ class clientes: public registro {
     rename("database/ClienteTemp.bin", "database/Cliente.bin");
 }
 
+   void registroDirecto (int _id){
+      string linea = "";
+      Cliente modelo;
+      ofstream archivo("database/Cliente.bin", ios::app | ios::binary);
+      
+      modelo.id = _id;
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+      cout << "Nombre: ";
+      getline(cin, linea);
+      strcpy(modelo.nombre, linea.c_str());
+      cout << "Direccion: ";
+      getline(cin, linea);
+      strcpy(modelo.direccion, linea.c_str());
+      cout << "Telefono: ";
+      getline(cin, linea);
+      strcpy(modelo.telefono, linea.c_str());
+
+      if (!archivo) {
+            cerr << "No se pudo abrir el archivo para escritura.\n";
+      }else{
+            archivo.write((char*)&modelo, sizeof(Cliente));
+            archivo.close();
+      }
+   }
 };

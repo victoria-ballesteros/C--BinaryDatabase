@@ -21,23 +21,24 @@ class productos: public registro {
       Producto producto;
 
       while (archivo.read((char*)&producto, sizeof(Producto))) {
-         cout<<""<<endl;
+         cout<<""<<'\n';
          cout << "ID--------------------: " << producto.id << "\n";
          cout << "DESCRIPCION-----------: " << producto.description << "\n";
-         cout <<"____________________________________________________________"<<endl;
+         cout << "STOCK-----------------: " << producto.stock << "\n";
+         cout <<"____________________________________________________________"<<'\n';
       }
       archivo.close();
    }
 
    void imprimirProducto(Producto producto){
-      cout <<"ID---------------: "<< producto.id << endl;
-      cout <<"ID proveedor-----:  "<< producto.id_proveedor << endl;
-      cout <<"Stock------------: "<< producto.stock << endl;
-      cout <<"Precio-----------: "<< producto.precio << endl;
-      cout <<"Descripcion------: "<< producto.description << endl;
-      cout <<"Stock minimo-----: "<< producto.stock_min << endl;
-      cout <<"____________________________________________________________"<<endl;
-      cout<<""<<endl;
+      cout <<"ID---------------: "<< producto.id << '\n';
+      cout <<"ID proveedor-----:  "<< producto.id_proveedor << '\n';
+      cout <<"Stock------------: "<< producto.stock << '\n';
+      cout <<"Precio-----------: "<< producto.precio << '\n';
+      cout <<"Descripcion------: "<< producto.description << '\n';
+      cout <<"Stock minimo-----: "<< producto.stock_min << '\n';
+      cout <<"____________________________________________________________"<<'\n';
+      cout<<""<<'\n';
    }
 
    void registrarProducto(){
@@ -47,15 +48,15 @@ class productos: public registro {
         ofstream archivo("database/Producto.bin", ios::app | ios::binary);
 
         do{
-            cout<<"Por favor introduzca el ID del producto (maximo 5 digitos):"<<endl;
+            cout<<"Por favor introduzca el ID del producto (maximo 5 digitos):"<<'\n';
             auxId = helper.validarInt(99999);
             modelo = getProducto(auxId);
             if(modelo.id != -1){
-               cout<<"Ya existe un producto con el ID especificado"<<endl;
+               cout<<"Ya existe un producto con el ID especificado"<<'\n';
             }
 
         }while(modelo.id != -1);
-            cout<<"Por favor introduzca la informacion solicitada a continuacion:"<<endl;
+            cout<<"Por favor introduzca la informacion solicitada a continuacion:"<<'\n';
             modelo.id = auxId;
             cout<<"ID del proveedor: ";
             cin>>modelo.id_proveedor;
@@ -86,27 +87,27 @@ class productos: public registro {
       int auxId = 0, generadorId = 0, cambioPropiedad = 0;
       fstream archivo("database/Producto.bin", ios::out | ios::in | ios::binary); 
       do{
-         cout<<"Por favor introduzca el ID del producto (maximo 5 digitos)"<<endl;
+         cout<<"Por favor introduzca el ID del producto (maximo 5 digitos)"<<'\n';
          auxId = helper.validarInt(99999);
          modelo = getProducto(auxId);
 
          if(modelo.id == -1){
-            cout<<"No existe un producto con el ID especificado"<<endl;
+            cout<<"No existe un producto con el ID especificado"<<'\n';
          }
       }while(modelo.id == -1);
 
       do{
          imprimirProducto(modelo);
-         cout<<"Seleccione la opcion que desee cambiar:"<<endl;
-         cout <<"1. ID proveedor" << endl;
-         cout <<"2. Stock"<< endl;
-         cout <<"3. Precio"<< endl;
-         cout <<"4. Descripcion"<< endl;
-         cout <<"5. Stock minimo"<< endl;
-         cout <<"6. Terminar proceso"<< endl;
+         cout<<"Seleccione la opcion que desee cambiar:"<<'\n';
+         cout <<"1. ID proveedor" << '\n';
+         cout <<"2. Stock"<< '\n';
+         cout <<"3. Precio"<< '\n';
+         cout <<"4. Descripcion"<< '\n';
+         cout <<"5. Stock minimo"<< '\n';
+         cout <<"6. Terminar proceso"<< '\n';
          cout <<"Respuesta: ";
          cin >> cambioPropiedad;
-         cout<<""<<endl;
+         cout<<""<<'\n';
 
          if(cambioPropiedad == 1){
             cout<<"ID del proveedor: ";
@@ -150,12 +151,12 @@ class productos: public registro {
     archivoTemporal.open("database/ProductoTemp.bin", ios::in | ios::out | ios::binary);
 
     do{
-        cout<<"Por favor introduzca el ID del producto (maximo 5 digitos)"<<endl;
+        cout<<"Por favor introduzca el ID del producto (maximo 5 digitos)"<<'\n';
         auxId = helper.validarInt(99999);
         modelo = getProducto(auxId);
 
         if(modelo.id == -1){
-            cout<<"No existe un producto con el ID especificado"<<endl;
+            cout<<"No existe un producto con el ID especificado"<<'\n';
         }
 
     }while(modelo.id == -1);

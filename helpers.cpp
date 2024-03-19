@@ -2,7 +2,6 @@
 
 long helpers::validarLong(){
    long numero = 0;
-   cout << "Por favor, ingrese una clave de acceso: ";
       while(!(cin >> numero)) {
          cin.clear();
          cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -13,7 +12,6 @@ long helpers::validarLong(){
 
  int helpers::validarInt(int maximo){
    int numero;
-   cout << "Respuesta: ";
    do{
       while(!(cin >> numero)) {
          cin.clear();
@@ -26,7 +24,6 @@ long helpers::validarLong(){
 
  int helpers::validarIntSinLimite(){
    int numero;
-   cout << "Respuesta: ";
       while(!(cin >> numero)) {
          cin.clear();
          cin.ignore(numeric_limits<streamsize>::max(), '\n');

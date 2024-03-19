@@ -168,6 +168,23 @@ public:
         return cantidadDeRegistros;
     }
 
+    void modificarCantidadProducto(int _id, int disminucion){
+        Producto modelo;
+        fstream archivo("database/Producto.bin", ios::out | ios::in | ios::binary); 
+        modelo = getProducto(_id);
+        modelo.stock -= disminucion;
+        if (!archivo) {
+            cerr << "No se pudo abrir el archivo para escritura.\n";
+        }else{
+            archivo.seekg(auxPosicionProducto * sizeof(Producto));
+            archivo.write((char*)&modelo, sizeof(Producto));
+            archivo.close();
+        }
+    }
+
+    void imprimirCompras(int id_factura){
+        
+    }
 };
 
 #endif
