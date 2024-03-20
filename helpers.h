@@ -18,6 +18,8 @@ int validarInt(int maximo);
 
 int validarIntSinLimite();
 
+float validarFloat();
+
 };
 
 #endif

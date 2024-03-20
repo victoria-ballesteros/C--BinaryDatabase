@@ -157,7 +157,7 @@ public:
 
     int cantidadRegistro(string dir, size_t sizeOf){
         ifstream archivo(dir, ios::binary | ios::ate);
-        if (!archivo) {
+        if (archivo.fail()) {
             cerr << "No se pudo abrir el archivo.\n";
             archivo.close();
             return -1;
@@ -173,7 +173,7 @@ public:
         fstream archivo("database/Producto.bin", ios::out | ios::in | ios::binary); 
         modelo = getProducto(_id);
         modelo.stock -= disminucion;
-        if (!archivo) {
+        if (archivo.fail()) {
             cerr << "No se pudo abrir el archivo para escritura.\n";
         }else{
             archivo.seekg(auxPosicionProducto * sizeof(Producto));

@@ -31,3 +31,14 @@ long helpers::validarLong(){
       }
    return numero;
  }
+
+ float validarFloat(){
+   float numero = 0.0;
+   while (!(std::cin >> numero))
+   {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      std::cout << "Entrada invalida. Por favor, ingresa un numero (punto para la coma flotante): ";
+   }
+   return numero;
+ }
