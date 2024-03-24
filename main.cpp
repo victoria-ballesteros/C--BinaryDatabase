@@ -5,17 +5,24 @@
 #include <cstring>
 #include <random>
 #include <ctime>
+#include <windows.h>
 #include "helpers.h"
 #include "dataTypes\dataTypes.h"
 
+registro registros;
 clientes cliente;
 compras compra;
 facturas factura;
 productos producto;
 proveedores proveedor;
+std::vector<int> reponerStock_cantidad;
+std::vector<int> reponerStock_id;
 
 long key[4] = {11235, 81321, 34558, 0};
 int eleccionMenu = 0, keyNumber = 0, terminarEjecucion = 0;
+bool aprobarAlmacen = false;
+std::string directorio = "";
+
 random_device rd;
 mt19937 gen(rd());
 
@@ -25,7 +32,6 @@ void modificarRegistro(int eleccionMenu);
 void eliminarRegistro(int eleccionMenu);
 void mecanismoCaja();
 void mecanismoAlmacen();
-
 int subMenuAdministrador();
 int generarRandom();
 int validarClave();
@@ -33,15 +39,25 @@ void menu(int clave);
 
 int main()
 {
+   /*HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+   SetConsoleTextAttribute(hConsole, BACKGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);*/
    do
    {
+      std::cout << "\033[38;5;213m";
       keyNumber = validarClave();
       menu(keyNumber);
       system("cls");
-      std::cout << "***INDIQUE SI DESEA INTRODUCIR UNA CLAVE DIFERENTE***" << '\n';
-      std::cout << "1. Si" << '\n';
-      std::cout << "2. No" << '\n';
-      terminarEjecucion = helper.validarInt(2);
+      if (aprobarAlmacen == true)
+      {
+         menu(0);
+      }
+      else
+      {
+         std::cout << "***INDIQUE SI DESEA INTRODUCIR UNA CLAVE DIFERENTE***" << '\n';
+         std::cout << "1. Si" << '\n';
+         std::cout << "2. No" << '\n';
+         terminarEjecucion = helper.validarInt(2);
+      }
    } while (terminarEjecucion != 2);
    return 0;
 }
@@ -119,6 +135,7 @@ int validarClave()
 
    do
    {
+      system("cls");
       std::cout << "Introduzca una clave de acceso: ";
       claveIntroducida = helper.validarLong();
       for (i = 0; i < 3; i++)
@@ -129,6 +146,11 @@ int validarClave()
             puesto = i;
             break;
          }
+      }
+      if (flag == false)
+      {
+         std::cout << "La clave de acceso introducida no es valida." << '\n';
+         system("pause");
       }
    } while (flag != true);
    return puesto;
@@ -195,7 +217,8 @@ void eliminarRegistro(int eleccionMenu)
       compra.eliminarRegistro();
       break;
    case 3:
-      factura.eliminarRegistro();
+      compra.eliminarComprasPorFactura(factura.eliminarRegistro(), reponerStock_id, reponerStock_cantidad);
+      producto.modificacionesStock(reponerStock_id, reponerStock_cantidad);
       break;
    case 4:
       producto.eliminarRegistro();
@@ -211,11 +234,11 @@ void eliminarRegistro(int eleccionMenu)
 int subMenuAdministrador()
 {
    int seleccion = 0;
-   std::cout << "Por favor seleccione una opcion:" << '\n';
    std::cout << "1. Agregar Registro" << '\n';
    std::cout << "2. Editar Registro" << '\n';
    std::cout << "3. Eliminar Registro" << '\n';
    std::cout << "4. Seleccionar otro tipo de Registro" << '\n';
+   std::cout << "\nPor favor seleccione una opcion: ";
    seleccion = helper.validarInt(4);
    return seleccion;
 }
@@ -276,7 +299,6 @@ void mecanismoCaja()
       continuarCompra = helper.validarInt(2);
    } while (continuarCompra != 2);
    std::cout << "" << '\n';
-   std::cout << "Procesando factura" << '\n';
    modeloFactura.id = id_factura;
    modeloFactura.id_cliente = modelo.id;
    generarFechaActual(modeloFactura);
@@ -292,20 +314,25 @@ void mecanismoAlmacen()
 {
    string dir = "";
    int aux_id = 0, finJornada = 0;
+   bool dirAproval = true;
    productos::Producto modelo;
+   cin.ignore(numeric_limits<streamsize>::max(), '\n');
    do
    {
+      dirAproval = true;
       std::cout << "Por favor introduzca el nombre del archivo de texto con el cual va a trabajar: ";
-      cin.ignore(numeric_limits<streamsize>::max(), '\n');
       getline(cin, dir);
       if (dir == "Producto" || dir == "ProductoTemp")
       {
          std::cout << "Su archivo no puede tener el nombre indicado" << '\n';
+         dirAproval == false;
       }
    } while (dir == "Producto" || dir == "ProductoTemp");
    producto.escribirNuevoArchivo(dir);
    std::cout << "__________________________________" << '\n';
    producto.listarProductos("database/" + dir + ".bin");
+   directorio = "database/" + dir + ".bin";
+
    do
    {
       do
@@ -318,32 +345,49 @@ void mecanismoAlmacen()
             std::cout << "El ID indicado no corresponde a ningun producto" << '\n';
          }
       } while (modelo.id == -1);
-      producto.modificacionesAlmacen(dir, aux_id);
+      producto.modificacionesAlmacen("database/" + dir + ".bin", aux_id);
       std::cout << "Fin de jornada?:" << '\n';
       std::cout << "1. Si" << '\n';
       std::cout << "2. No" << '\n';
       finJornada = helper.validarInt(2);
    } while (finJornada == 2);
    std::cout << "Su archivo será aprobado o desechado por un administrador" << '\n';
+   aprobarAlmacen = true;
+   system("pause");
 }
 
 void menu(int clave)
 {
-   int eleccionOpcion = 0, opcionesCaja = 0;
+   int contOpciones = 6;
+   int eleccionOpcion = 0, opcionesCaja = 0, aprobarCambio = 0;
    switch (clave)
    {
    case 0: //  administrador
       do
       {
          system("cls");
-         std::cout << "Por favor seleccione un registro:" << '\n';
+         if (aprobarAlmacen == true)
+         {
+            std::cout << "POR FAVOR ACCEDA A LA OPCION 6" << '\n';
+         }
+         std::cout <<"***** Menu de Administrador *****\n\n"; 
          std::cout << "1. Cliente" << '\n';
          std::cout << "2. Compra" << '\n';
          std::cout << "3. Factura" << '\n';
          std::cout << "4. Producto" << '\n';
          std::cout << "5. Proveedor" << '\n';
-         std::cout << "6. Volver" << '\n';
-         eleccionMenu = helper.validarInt(6);
+         if (aprobarAlmacen)
+         {
+            std::cout << "6. Aprobar ediciones de almacen" << '\n';
+            contOpciones++;
+         }
+         std::cout << contOpciones << ". Volver" << '\n';
+         std::cout << "\nPor favor seleccione una opcion: ";
+         if(aprobarAlmacen){
+            eleccionMenu = 6;
+         }else{
+            eleccionMenu = helper.validarInt(6);
+         }
          if (eleccionMenu == 1)
          {
             system("cls");
@@ -383,7 +427,36 @@ void menu(int clave)
             std::cout << "PROVEEDORES REGISTRADOS" << '\n';
             proveedor.listarProveedores();
             std::cout << "" << '\n';
-         }else if (eleccionMenu == 6){
+         }
+         else if (eleccionMenu == 6)
+         {
+            if (aprobarAlmacen)
+            {
+               system("cls");
+               cout << "ARCHIVO DE ALMACEN" << '\n';
+               producto.listarProductos(directorio);
+               system("pause");
+               cout << "Indique si desea guardar los cambios: " << '\n';
+               std::cout << "1. Si" << '\n';
+               std::cout << "2. No" << '\n';
+               aprobarAlmacen = false;
+               aprobarCambio = helper.validarIntSinLimite();
+               if (aprobarCambio == 1)
+               {
+                  remove("database/Producto.bin");
+                  if (rename(directorio.c_str(), "database/Producto.bin") != 0)
+                  {
+                     perror("Error al renombrar el archivo");
+                  }
+               }
+               aprobarAlmacen = false;
+               return;
+            }else{
+               return;
+            }
+         }
+         else if (eleccionMenu == 7)
+         {
             return;
          }
 
@@ -406,14 +479,13 @@ void menu(int clave)
             break;
          }
 
-      } while (eleccionMenu != 6);
+      } while (eleccionMenu != 7);
       break;
    case 1: //  almacén
       std::cout << "" << '\n';
       std::cout << "APERTURA DE ALMACEN" << '\n';
       std::cout << "" << '\n';
       mecanismoAlmacen();
-
       break;
    case 2: //  vendedor
       std::cout << "" << '\n';

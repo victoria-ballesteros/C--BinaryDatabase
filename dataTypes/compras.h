@@ -10,9 +10,10 @@ class compras : public registro
 {
 
 public:
+   
    void listarCompras()
    {
-      ifstream archivo("database/Compra.bin", ios::binary);
+      std::fstream archivo("database/Compra.bin", std::ios::binary | std::ios::in | std::ios::out);
       if (archivo.fail())
       {
          cerr << "No se pudo abrir el archivo.\n";
@@ -83,7 +84,8 @@ public:
    {
       string linea = "";
       Compra modelo;
-      int auxId = 0, generadorId = 0, cambioPropiedad = 0;
+      Producto modeloProducto, modeloProductoCambio;
+      int auxId = 0, generadorId = 0, cambioPropiedad = 0, aux_id_producto = 0;
       fstream archivo("database/Compra.bin", ios::out | ios::in | ios::binary);
       std::cout << "Por favor introduzca el ID de la compra:" << '\n';
       auxId = helper.validarIntSinLimite();
@@ -107,8 +109,20 @@ public:
          std::cout << '\n';
          if (cambioPropiedad == 1)
          {
-            std::cout << "Id del producto asociado: ";
-            modelo.id_producto = helper.validarIntSinLimite();
+            std::cout << "ID del producto asociado: ";
+            aux_id_producto = helper.validarIntSinLimite();
+            modeloProducto = getProducto(aux_id_producto);
+            if (modeloProducto.id == -1)
+            {
+               std::cout << "No existe un producto con el ID indicado." << '\n';
+            }
+            else
+            {
+               modeloProductoCambio = getProducto(modelo.id_producto);
+               modeloProductoCambio.stock += modelo.cantidad;
+               modeloProducto.stock -= modelo.cantidad;
+               modelo.id_producto = aux_id_producto;
+            }
          }
          else if (cambioPropiedad == 2)
          {
@@ -172,6 +186,7 @@ public:
             archivoTemporal.write((char *)&reemplazo, sizeof(Compra));
          }
       }
+
       archivoOriginal.close();
       archivoTemporal.close();
       remove("database/Compra.bin");
@@ -194,9 +209,11 @@ public:
          if (modeloProducto.id == -1)
          {
             std::cout << "El producto indicado no existe en la base de datos" << '\n';
+            std::cout << "Eche un vistazo a los productos disponibles" << '\n';
+            listarProductos("database/Producto.bin");
             system("pause");
          }
-         if (modeloProducto.stock_min > modeloProducto.stock)
+         if ((modeloProducto.stock_min > modeloProducto.stock) && modeloProducto.id != -1)
          {
             std::cout << "Producto no disponible para la venta por escasez de inventario." << '\n';
             system("pause");
@@ -272,5 +289,45 @@ public:
          }
       }
       archivo.close();
+   }
+
+   void eliminarComprasPorFactura(int id_factura, std::vector<int>& v_id, std::vector<int>& v_cant)
+   {
+      int auxId = 0;
+      Compra reemplazo;
+      fstream archivoOriginal("database/Compra.bin", ios::out | ios::in | ios::binary);
+      fstream archivoTemporal("database/CompraTemp.bin", ios::out);
+      archivoTemporal.close();
+      archivoTemporal.open("database/CompraTemp.bin", ios::in | ios::out | ios::binary);
+
+      if (archivoOriginal.fail())
+      {
+         cerr << "No se pudo abrir el archivo.\n";
+         system("pause");
+         return;
+      }
+      if (archivoTemporal.fail())
+      {
+         cerr << "No se pudo abrir el archivo.\n";
+         system("pause");
+         return;
+      }
+      while (archivoOriginal.read((char *)&reemplazo, sizeof(Compra)))
+      {
+         if (reemplazo.id_factura != id_factura)
+         {
+            archivoTemporal.write((char *)&reemplazo, sizeof(Compra));
+         }
+         else if (reemplazo.id_factura == id_factura)
+         {
+            v_cant.push_back(reemplazo.cantidad);
+            v_id.push_back(reemplazo.id_producto);
+            system("pause");
+         }
+      }
+      archivoOriginal.close();
+      archivoTemporal.close();
+      remove("database/Compra.bin");
+      rename("database/CompraTemp.bin", "database/Compra.bin");
    }
 };

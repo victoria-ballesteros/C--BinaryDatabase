@@ -12,7 +12,7 @@ class facturas : public registro
 public:
    void listarFacturas()
    {
-      ifstream archivo("database/Factura.bin", ios::binary);
+      std::fstream archivo("database/Factura.bin", std::ios::binary | std::ios::in | std::ios::out);
       if (archivo.fail())
       {
          cerr << "No se pudo abrir el archivo.\n";
@@ -80,6 +80,8 @@ public:
       string linea = "";
       Factura modelo;
       int auxId = 0, generadorId = 0, cambioPropiedad = 0;
+      int aux_id_cliente = 0;
+      Cliente modeloCliente;
       fstream archivo("database/Factura.bin", ios::out | ios::in | ios::binary);
       std::cout << "Por favor introduzca el ID de la factura:" << '\n';
       auxId = helper.validarIntSinLimite();
@@ -104,7 +106,13 @@ public:
          if (cambioPropiedad == 1)
          {
             std::cout << "Id del cliente asociado: ";
-            modelo.id_cliente = helper.validarIntSinLimite();
+            aux_id_cliente = helper.validarIntSinLimite();
+            modeloCliente = getCliente(aux_id_cliente);
+            if (modeloCliente.id == -1){
+               std::cout << "El cliente indicado no existe en la base de datos, por favor, registrelo." <<'\n';
+            }else{
+               modelo.id_cliente = aux_id_cliente;
+            }
          }
          else if (cambioPropiedad == 2)
          {
@@ -126,11 +134,12 @@ public:
       }
    }
 
-   void eliminarRegistro()
+   int eliminarRegistro()
    {
       int auxId = 0;
       Factura modelo;
       Factura reemplazo;
+      Compra modeloCompra;
       fstream archivoOriginal("database/Factura.bin", ios::out | ios::in | ios::binary);
       fstream archivoTemporal("database/FacturaTemp.bin", ios::out);
       archivoTemporal.close();
@@ -142,19 +151,19 @@ public:
       {
          std::cout << "No existe una factura con el ID especificado" << '\n';
          system("pause");
-         return;
+         return -1;
       }
       if (archivoOriginal.fail())
       {
          cout << "No se pudo abrir el archivo original." << '\n';
          system("pause");
-         return;
+         return -1;
       }
       if (archivoTemporal.fail())
       {
          cout << "No se pudo abrir el archivo temporal." << '\n';
          system("pause");
-         return;
+         return -1;
       }
       while (archivoOriginal.read((char *)&reemplazo, sizeof(Factura)))
       {
@@ -163,10 +172,13 @@ public:
             archivoTemporal.write((char *)&reemplazo, sizeof(Factura));
          }
       }
+
+      
       archivoOriginal.close();
       archivoTemporal.close();
       remove("database/Factura.bin");
       rename("database/FacturaTemp.bin", "database/Factura.bin");
+      return auxId;
    }
 
    void registrarFacturaDirecta(Factura factura)

@@ -12,7 +12,7 @@ class proveedores : public registro
 public:
    void listarProveedores()
    {
-      ifstream archivo("database/Proveedor.bin", ios::binary);
+      std::fstream archivo("database/Proveedor.bin", std::ios::binary | std::ios::in | std::ios::out);
       if (archivo.fail())
       {
          cerr << "No se pudo abrir el archivo.\n";

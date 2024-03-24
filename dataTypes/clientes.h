@@ -10,24 +10,25 @@ class clientes : public registro
 {
 
 public:
+#include <fstream>
+#include <iostream>
+
    void listarClientes()
    {
-      ifstream archivo("database/Cliente.bin", ios::binary);
+      std::fstream archivo("database/Cliente.bin", std::ios::binary | std::ios::in | std::ios::out);
       if (archivo.fail())
       {
-         cerr << "No se pudo abrir el archivo.\n";
+         std::cerr << "No se pudo abrir el archivo.\n";
          system("pause");
          return;
       }
       Cliente cliente;
       while (archivo.read((char *)&cliente, sizeof(Cliente)))
       {
-         std::cout << ""
-                   << "\n";
+         std::cout << "\n";
          std::cout << "ID--------------------: " << cliente.id << "\n";
          std::cout << "NOMBRE----------------: " << cliente.nombre << "\n";
-         std::cout << "__________________________________________________"
-                   << "\n";
+         std::cout << "__________________________________________________\n";
       }
       archivo.close();
    }
@@ -49,14 +50,14 @@ public:
       string linea = "";
       Cliente modelo;
       ofstream archivo("database/Cliente.bin", ios::app | ios::binary);
-      std::cout << "Por favor introduzca el ID del cliente: "
-                  << "\n";
+      std::cout << "\n***** Datos del cliente *****\n";
+      std::cout << "\nIntroduzca el ID del cliente: ";
       auxId = helper.validarIntSinLimite();
       modelo = getCliente(auxId);
       if (modelo.id != -1)
       {
-         std::cout << "Ya existe un cliente con el ID especificado"
-                     << "\n";
+         system("cls");
+         std::cout << "\nYa existe un cliente con el ID especificado\n\n";
          system("pause");
          return;
       }
@@ -91,16 +92,17 @@ public:
       Cliente modelo;
       int auxId = 0, generadorId = 0, cambioPropiedad = 0;
       fstream archivo("database/Cliente.bin", ios::out | ios::in | ios::binary);
-      std::cout << "Por favor introduzca el ID del cliente"
-                  << "\n";
+      std::cout << "\n***** Datos del cliente *****\n";
+      std::cout << "\nIntroduzca el ID del cliente: ";
       auxId = helper.validarIntSinLimite();
       modelo = getCliente(auxId);
 
       if (modelo.id == -1)
       {
-         std::cout << "No existe un cliente con el ID especificado"
-                     << "\n";
+         system("cls");
+         std::cout << "No existe un cliente con el ID especificado\n\n";
          system("pause");
+         return;
       }
       do
       {
@@ -167,13 +169,13 @@ public:
       archivoTemporal.close();
       archivoTemporal.open("database/ClienteTemp.bin", ios::in | ios::out | ios::binary);
       std::cout << "Por favor introduzca el ID del Cliente:"
-                  << "\n";
+                << "\n";
       auxId = helper.validarInt(99999);
       modelo = getCliente(auxId);
       if (modelo.id == -1)
       {
          std::cout << "No existe un cliente con el ID especificado"
-                     << "\n";
+                   << "\n";
          system("pause");
          return;
       }
