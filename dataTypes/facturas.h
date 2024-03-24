@@ -47,16 +47,19 @@ public:
       string linea = "";
       Factura modelo;
       ofstream archivo("database/Factura.bin", ios::app | ios::binary);
-      std::cout << "Por favor introduzca el ID de la factura:" << '\n';
+      std::cout << "\nPor favor introduzca el ID de la factura: ";
       auxId = helper.validarIntSinLimite();
       modelo = getFactura(auxId);
+
       if (modelo.id != -1)
       {
-         std::cout << "Ya existe una factura con el ID especificado" << '\n';
+         std::cout << "\nYa existe una factura con el ID especificado\n\n";
          system("pause");
          return;
       }
-      std::cout << "Por favor introduzca la informacion solicitada a continuacion:" << '\n';
+      system("cls");
+      std::cout << "***** Registro de Nueva Factura *****\n\n";
+      std::cout << "Por favor introduzca la informacion solicitada a continuacion:\n\n";
       modelo.id = auxId;
       cin.ignore(numeric_limits<streamsize>::max(), '\n');
       std::cout << "Id del cliente: ";
@@ -64,7 +67,7 @@ public:
 
       if (archivo.fail())
       {
-         cerr << "No se pudo abrir el archivo para escritura.\n";
+         cerr << "\nNo se pudo abrir el archivo para escritura.\n\n";
          system("pause");
          return;
       }
@@ -73,6 +76,9 @@ public:
          archivo.write((char *)&modelo, sizeof(Factura));
          archivo.close();
       }
+
+      cout << "\nFactura creada exitosamente\n\n";
+      system("pause");
    }
 
    void modificarFactura()
@@ -83,35 +89,42 @@ public:
       int aux_id_cliente = 0;
       Cliente modeloCliente;
       fstream archivo("database/Factura.bin", ios::out | ios::in | ios::binary);
-      std::cout << "Por favor introduzca el ID de la factura:" << '\n';
+      std::cout << "Por favor introduzca el ID de la factura: ";
       auxId = helper.validarIntSinLimite();
       modelo = getFactura(auxId);
       if (modelo.id == -1)
       {
-         std::cout << "No existe una factura con el ID especificado" << '\n';
+         std::cout << "\nNo existe una factura con el ID especificado\n\n";
          system("pause");
          return;
       }
       do
       {
+         system("cls");
+         std::cout << "***** Modificacion de Factura *****\n\n";
          imprimirFactura(modelo);
-         std::cout << "Seleccione la opcion que desee cambiar:" << '\n';
          std::cout << "1. ID del cliente asociado" << '\n';
          std::cout << "2. Fecha" << '\n';
          std::cout << "3. Salir" << '\n';
-         std::cout << "Respuesta: ";
+         std::cout << "\nSeleccione la opcion que desee cambiar: ";
          cambioPropiedad = helper.validarInt(3);
-         std::cout << "" << '\n';
 
          if (cambioPropiedad == 1)
          {
-            std::cout << "Id del cliente asociado: ";
+            std::cout << "\nId del cliente asociado: ";
             aux_id_cliente = helper.validarIntSinLimite();
             modeloCliente = getCliente(aux_id_cliente);
-            if (modeloCliente.id == -1){
-               std::cout << "El cliente indicado no existe en la base de datos, por favor, registrelo." <<'\n';
-            }else{
+
+            if (modeloCliente.id == -1)
+            {
+               system("cls");
+               std::cout << "\nEl cliente indicado no existe en la base de datos, por favor, registrelo.\n\n";
+               system("pause");
+            }
+            else
+            {
                modelo.id_cliente = aux_id_cliente;
+               std::cout << "\nFactura modificada exitosamente.";
             }
          }
          else if (cambioPropiedad == 2)
@@ -122,6 +135,7 @@ public:
       } while (cambioPropiedad != 3);
       if (archivo.fail())
       {
+         system("cls");
          cerr << "No se pudo abrir el archivo para escritura.\n";
          system("pause");
          return;
@@ -144,24 +158,29 @@ public:
       fstream archivoTemporal("database/FacturaTemp.bin", ios::out);
       archivoTemporal.close();
       archivoTemporal.open("database/FacturaTemp.bin", ios::in | ios::out | ios::binary);
-      std::cout << "Por favor introduzca el ID de la factura:" << '\n';
+      system("cls");
+      std::cout << "***** Eliminar Factura *****\n\n";
+      std::cout << "Por favor introduzca el ID de la factura: ";
       auxId = helper.validarIntSinLimite();
       modelo = getFactura(auxId);
       if (modelo.id == -1)
       {
-         std::cout << "No existe una factura con el ID especificado" << '\n';
+         system("cls");
+         std::cout << "\nNo existe una factura con el ID especificado\n\n";
          system("pause");
          return -1;
       }
       if (archivoOriginal.fail())
       {
-         cout << "No se pudo abrir el archivo original." << '\n';
+         system("cls");
+         cout << "\nNo se pudo abrir el archivo original.\n\n";
          system("pause");
          return -1;
       }
       if (archivoTemporal.fail())
       {
-         cout << "No se pudo abrir el archivo temporal." << '\n';
+         system("cls");
+         cout << "\nNo se pudo abrir el archivo temporal.\n\n";
          system("pause");
          return -1;
       }
@@ -173,11 +192,12 @@ public:
          }
       }
 
-      
       archivoOriginal.close();
       archivoTemporal.close();
       remove("database/Factura.bin");
       rename("database/FacturaTemp.bin", "database/Factura.bin");
+      cout << "\nFactura eliminada exitosamente.\n\n";
+      system("pause");
       return auxId;
    }
 
