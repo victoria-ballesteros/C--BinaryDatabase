@@ -106,17 +106,14 @@ public:
       }
       do
       {
+         system("cls");
+         cout << "***** Datos cliente *****\n\n";
          imprimirCliente(modelo);
-         std::cout << "Seleccione la opcion que desee cambiar:"
-                   << "\n";
-         std::cout << "1. Nombre"
-                   << "\n";
-         std::cout << "2. Direccion"
-                   << "\n";
-         std::cout << "3. Telefono"
-                   << "\n";
-         std::cout << "4. Salir"
-                   << "\n";
+         std::cout << "Seleccione la opcion que desee cambiar:\n\n";
+         std::cout << "1. Nombre\n";
+         std::cout << "2. Direccion\n";
+         std::cout << "3. Telefono\n";
+         std::cout << "4. Salir\n\n";
          std::cout << "Respuesta: ";
          cambioPropiedad = helper.validarInt(4);
          std::cout << ""
@@ -128,6 +125,8 @@ public:
             std::cout << "Nombre: ";
             getline(cin, linea);
             strcpy(modelo.nombre, linea.c_str());
+            cout << "\nNombre cambiado exitosamente a "<<modelo.nombre<<"\n\n";
+            system("pause");
          }
          else if (cambioPropiedad == 2)
          {
@@ -135,13 +134,17 @@ public:
             std::cout << "Direccion: ";
             getline(cin, linea);
             strcpy(modelo.direccion, linea.c_str());
+            cout << "\nDireccion cambiada exitosamente a "<<modelo.direccion<<"\n\n";
+            system("pause");
          }
          else if (cambioPropiedad == 3)
          {
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             std::cout << "Telefono: ";
             getline(cin, linea);
-            strcpy(modelo.direccion, linea.c_str());
+            strcpy(modelo.telefono, linea.c_str());
+            cout << "\nTelefono cambiado exitosamente a "<<modelo.telefono<<"\n\n";
+            system("pause");
          }
 
       } while (cambioPropiedad != 4);
