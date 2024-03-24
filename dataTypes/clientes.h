@@ -168,26 +168,28 @@ public:
       fstream archivoTemporal("database/ClienteTemp.bin", ios::out);
       archivoTemporal.close();
       archivoTemporal.open("database/ClienteTemp.bin", ios::in | ios::out | ios::binary);
-      std::cout << "Por favor introduzca el ID del Cliente:"
-                << "\n";
-      auxId = helper.validarInt(99999);
+      std::cout << "\nPor favor introduzca el ID del cliente: ";
+      auxId = helper.validarIntSinLimite();
       modelo = getCliente(auxId);
+
       if (modelo.id == -1)
       {
-         std::cout << "No existe un cliente con el ID especificado"
-                   << "\n";
+         system("cls");
+         std::cout << "\nNo existe un cliente con el ID especificado\n\n";
          system("pause");
          return;
       }
       if (archivoOriginal.fail())
       {
-         cerr << "No se pudo abrir el archivo original.\n";
+         system("cls");
+         cerr << "\nNo se pudo abrir el archivo original.\n\n";
          system("pause");
          return;
       }
       if (archivoTemporal.fail())
       {
-         cerr << "No se pudo abrir el archivo temporal.\n";
+         system("cls");
+         cerr << "\nNo se pudo abrir el archivo temporal.\n\n";
          system("pause");
          return;
       }
@@ -204,6 +206,8 @@ public:
 
       remove("database/Cliente.bin");
       rename("database/ClienteTemp.bin", "database/Cliente.bin");
+      std::cout << "\nEliminado exitosamente el cliente " << modelo.nombre << ".";
+      system("pause");
    }
 
    void registroDirecto(int _id)
