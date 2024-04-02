@@ -10,7 +10,6 @@ class compras : public registro
 {
 
 public:
-   
    void listarCompras()
    {
       std::fstream archivo("database/Compra.bin", std::ios::binary | std::ios::in | std::ios::out);
@@ -49,16 +48,19 @@ public:
       string linea = "";
       Compra modelo;
       ofstream archivo("database/Compra.bin", ios::app | ios::binary);
-      std::cout << "Por favor introduzca el ID de la compra:" << '\n';
+      std::cout << "\nPor favor introduzca el ID de la compra: ";
       auxId = helper.validarIntSinLimite();
       modelo = getCompra(auxId);
       if (modelo.id != -1)
       {
-         std::cout << "Ya existe una compra con el ID especificado" << '\n';
+         system("cls");
+         std::cout << "\nYa existe una compra con el ID especificado\n\n";
          system("pause");
          return;
       }
-      std::cout << "Por favor introduzca la informacion solicitada a continuacion:" << '\n';
+      system("cls");
+      std::cout << "***** Datos compra *****\n\n";
+      std::cout << "Por favor introduzca la informacion solicitada a continuacion:\n\n";
       modelo.id = auxId;
       cin.ignore(numeric_limits<streamsize>::max(), '\n');
       std::cout << "Id del producto: ";
@@ -69,7 +71,8 @@ public:
       modelo.cantidad = helper.validarIntSinLimite();
       if (archivo.fail())
       {
-         cerr << "No se pudo abrir el archivo.\n";
+         system("cls");
+         cerr << "\nNo se pudo abrir el archivo.\n\n";
          system("pause");
          return;
       }
@@ -77,6 +80,8 @@ public:
       {
          archivo.write((char *)&modelo, sizeof(Compra));
          archivo.close();
+         std::cout << "\nCompra registrada exitosamente\n\n";
+         system("pause");
       }
    }
 
@@ -87,23 +92,26 @@ public:
       Producto modeloProducto, modeloProductoCambio;
       int auxId = 0, generadorId = 0, cambioPropiedad = 0, aux_id_producto = 0;
       fstream archivo("database/Compra.bin", ios::out | ios::in | ios::binary);
-      std::cout << "Por favor introduzca el ID de la compra:" << '\n';
+      std::cout << "\nPor favor introduzca el ID de la compra: ";
       auxId = helper.validarIntSinLimite();
       modelo = getCompra(auxId);
       if (modelo.id == -1)
       {
-         std::cout << "No existe una compra con el ID especificado" << '\n';
+         system("cls");
+         std::cout << "\nNo existe una compra con el ID especificado\n\n";
          system("pause");
          return;
       }
       do
       {
+         system("cls");
+         std::cout << "***** Modificacion de Compra *****\n\n";
          imprimirCompra(modelo);
-         std::cout << "Seleccione la opcion que desee cambiar:" << '\n';
-         std::cout << "1. ID del producto asociado" << '\n';
-         std::cout << "2. ID de la factura asociada" << '\n';
-         std::cout << "3. Cantidad" << '\n';
-         std::cout << "4. Salir" << '\n';
+         std::cout << "Seleccione la opcion que desee cambiar:\n\n";
+         std::cout << "1. ID del producto asociado\n";
+         std::cout << "2. ID de la factura asociada\n";
+         std::cout << "3. Cantidad\n";
+         std::cout << "4. Salir\n\n";
          std::cout << "Respuesta: ";
          cambioPropiedad = helper.validarInt(4);
          std::cout << '\n';
@@ -114,7 +122,9 @@ public:
             modeloProducto = getProducto(aux_id_producto);
             if (modeloProducto.id == -1)
             {
-               std::cout << "No existe un producto con el ID indicado." << '\n';
+               system("cls");
+               std::cout << "\nNo existe un producto con el ID indicado.\n\n";
+               system("pause");
             }
             else
             {
@@ -128,20 +138,25 @@ public:
          {
             std::cout << "Id de la factura asociada: ";
             modelo.id_factura = helper.validarIntSinLimite();
+            std::cout << "\nId de la factura editado extisoamente\n\n";
+            system("pause");
          }
          else if (cambioPropiedad == 3)
          {
             std::cout << "Cantidad: ";
             modelo.cantidad = helper.validarIntSinLimite();
+            std::cout << "\nCantidad de la factura editado exitosamente\n\n";
+            system("pause");
          }
       } while (cambioPropiedad != 4);
       if (archivo.fail())
       {
-         cerr << "No se pudo abrir el archivo.\n";
+         system("cls");
+         cerr << "\nNo se pudo abrir el archivo.\n\n";
          system("pause");
          return;
       }
-      else
+
       {
          archivo.seekg(auxPosicionCompra * sizeof(Compra));
          archivo.write((char *)&modelo, sizeof(Compra));
@@ -158,24 +173,27 @@ public:
       fstream archivoTemporal("database/CompraTemp.bin", ios::out);
       archivoTemporal.close();
       archivoTemporal.open("database/CompraTemp.bin", ios::in | ios::out | ios::binary);
-      std::cout << "Por favor introduzca el ID de la compra: " << '\n';
+      std::cout << "\nPor favor introduzca el ID de la compra: ";
       auxId = helper.validarIntSinLimite();
       modelo = getCompra(auxId);
       if (modelo.id == -1)
       {
-         std::cout << "No existe una compra con el ID especificado" << '\n';
+         system("cls");
+         std::cout << "\nNo existe una compra con el ID especificado\n\n";
          system("pause");
          return;
       }
       if (archivoOriginal.fail())
       {
-         cerr << "No se pudo abrir el archivo.\n";
+         system("cls");
+         cerr << "\nNo se pudo abrir el archivo.\n\n";
          system("pause");
          return;
       }
       if (archivoTemporal.fail())
       {
-         cerr << "No se pudo abrir el archivo.\n";
+         system("cls");
+         cerr << "\nNo se pudo abrir el archivo.\n\n";
          system("pause");
          return;
       }
@@ -191,6 +209,9 @@ public:
       archivoTemporal.close();
       remove("database/Compra.bin");
       rename("database/CompraTemp.bin", "database/Compra.bin");
+   std:
+      cout << "\nArchivo eliminado exitosamente.\n\n";
+      system("pause");
    }
 
    void registrarCompraCaja(int id_factura, int id_compra)
@@ -203,19 +224,21 @@ public:
       Producto modeloProducto;
       do
       {
-         std::cout << "Por favor introduzca el Id del producto: ";
+         std::cout << "\nPor favor introduzca el Id del producto: ";
          id_producto_aux = helper.validarIntSinLimite();
          modeloProducto = getProducto(id_producto_aux);
          if (modeloProducto.id == -1)
          {
-            std::cout << "El producto indicado no existe en la base de datos" << '\n';
-            std::cout << "Eche un vistazo a los productos disponibles" << '\n';
+            system("cls");
+            std::cout << "\nEl producto indicado no existe en la base de datos\n";
+            std::cout << "Eche un vistazo a los productos disponibles\n\n";
             listarProductos("database/Producto.bin");
             system("pause");
          }
          if ((modeloProducto.stock_min > modeloProducto.stock) && modeloProducto.id != -1)
          {
-            std::cout << "Producto no disponible para la venta por escasez de inventario." << '\n';
+            system("cls");
+            std::cout << "Producto no disponible para la venta por escasez de inventario.\n\n";
             system("pause");
          }
       } while (modeloProducto.id == -1 || modeloProducto.stock_min > modeloProducto.stock);
@@ -226,11 +249,12 @@ public:
 
          if (modeloProducto.stock < cantidad_producto_aux)
          {
-            std::cout << "No hay suficiente producto en existencia" << '\n';
+            system("cls");
+            std::cout << "\nNo hay suficiente producto en existencia\n\n";
             system("pause");
          }
       } while (modeloProducto.stock < cantidad_producto_aux);
-      std::cout << "Por favor confirme la compra (Una vez confirmada se ejecutarán cambios irreversibles en la base de datos)" << '\n';
+      std::cout << "Por favor confirme la compra (Una vez confirmada se ejecutarán cambios irreversibles en la base de datos)\n";
       std::cout << "1. Si" << '\n';
       std::cout << "2. No" << '\n';
       confirmarCompra = helper.validarInt(2);
@@ -238,7 +262,8 @@ public:
       {
          if (archivo.fail())
          {
-            cerr << "No se pudo abrir el archivo.\n";
+            system("cls");
+            cerr << "No se pudo abrir el archivo.\n\n";
             system("pause");
             return;
          }
@@ -255,7 +280,8 @@ public:
       }
       else
       {
-         std::cout << "Compra cancelada" << '\n';
+         system("cls");
+         std::cout << "\nCompra cancelada\n\n";
          system("pause");
       }
    }
@@ -265,7 +291,8 @@ public:
       ifstream archivo("database/Compra.bin", ios::binary);
       if (archivo.fail())
       {
-         cerr << "No se pudo abrir el archivo.\n";
+         system("cls");
+         cerr << "\nNo se pudo abrir el archivo.\n\n";
          system("pause");
          return;
       }
@@ -274,7 +301,8 @@ public:
       {
          if (archivo.fail())
          {
-            cerr << "Error al leer del archivo.\n";
+            system("cls");
+            cerr << "\nError al leer del archivo.\n\n";
             system("pause");
             return;
          }
@@ -291,7 +319,7 @@ public:
       archivo.close();
    }
 
-   void eliminarComprasPorFactura(int id_factura, std::vector<int>& v_id, std::vector<int>& v_cant)
+   void eliminarComprasPorFactura(int id_factura, std::vector<int> &v_id, std::vector<int> &v_cant)
    {
       int auxId = 0;
       Compra reemplazo;

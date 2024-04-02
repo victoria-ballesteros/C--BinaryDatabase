@@ -400,7 +400,7 @@ void menu(int clave)
          {
             system("cls");
             std::cout << "" << '\n';
-            std::cout << "COMPRAS REGISTRADOS" << '\n';
+            std::cout << "COMPRAS REGISTRADAS" << '\n';
             compra.listarCompras();
             std::cout << "" << '\n';
          }
@@ -408,7 +408,7 @@ void menu(int clave)
          {
             system("cls");
             std::cout << "" << '\n';
-            std::cout << "FACTURAS REGISTRADOS" << '\n';
+            std::cout << "FACTURAS REGISTRADAS" << '\n';
             factura.listarFacturas();
             std::cout << "" << '\n';
          }

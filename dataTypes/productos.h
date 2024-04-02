@@ -268,9 +268,11 @@ public:
       int cont = 0;
       if (archivo.fail())
       {
-         std::cout << "No se pudo abrir el archivo.\n";
+         system("cls");
+         std::cout << "No se pudo abrir el archivo.\n\n";
          return;
       }
+
       for (int i = 0; i < v_id.size(); i++) {
          modelo = getProducto(v_id[i]);
          
