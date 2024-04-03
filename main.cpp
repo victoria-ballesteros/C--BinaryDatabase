@@ -37,6 +37,23 @@ int generarRandom();
 int validarClave();
 void menu(int clave);
 
+
+bool compararStock(const productos::Producto& a, const productos::Producto& b) {
+    return a.stock < b.stock;
+}
+
+
+void ordenamiento(std::vector<productos::Producto>& productos){
+   int n = productos.size();
+   for (int i = 0; i < n-1; i++) {
+      for (int j = 0; j < n-i-1; j++) {
+         if (compararStock(productos[j+1], productos[j])) {
+               std::swap(productos[j], productos[j+1]);
+         }
+      }
+   }
+}
+
 int main()
 {
    /*HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -59,8 +76,39 @@ int main()
          terminarEjecucion = helper.validarInt(2);
       }
    } while (terminarEjecucion != 2);
+   std::ifstream archivoBinario("database/Producto.bin", std::ios::binary);
+   std::vector<productos::Producto> productos;
+   std::vector<productos::Producto> productosAgotados;
+   std::vector<productos::ProductosAgotados> impresionProductos;
+   productos::Producto producto;
+   productos::ProductosAgotados auxImpresion;
+   while (archivoBinario.read(reinterpret_cast<char*>(&producto), sizeof(productos::Producto))) {
+      productos.push_back(producto);
+   }
+   archivoBinario.close();
+   ordenamiento(productos);
+   for (int i = 0; i < productos.size(); i++) {
+      if(productos[i].stock < productos[i].stock_min){
+         productosAgotados.push_back(productos[i]);
+         auxImpresion.stock = productos[i].stock;
+         auxImpresion.stock_min = productos[i].stock_min;
+         auxImpresion.id_proveedor = productos[i].id_proveedor;
+         impresionProductos.push_back(auxImpresion);
+      }
+   }
+   std::ofstream archivoTexto("database/reposicionesAlmacen.txt");
+   for (const auto& producto : impresionProductos) {
+      archivoTexto << "ID DEL PROVEEDOR: " << producto.id_proveedor << ", CANTIDAD ACTUAL EN STOCK: "<< producto.stock << ", CANTIDAD MINIMA DE STOCK: "<< producto.stock_min << '\n';
+      std::cout << "ID DEL PROVEEDOR: " << producto.id_proveedor << ", CANTIDAD ACTUAL EN STOCK: "<< producto.stock << ", CANTIDAD MINIMA DE STOCK: "<< producto.stock_min << '\n';
+   }
+   archivoTexto.close();
+   std:cout << "\nEl archivo de texto con las indicaciones de reposiciones de productos ha sido actualizado correctamente\n";
+   system("pause");
+   system("cls");
    return 0;
 }
+
+
 
 long helpers::validarLong()
 {
@@ -498,6 +546,7 @@ void menu(int clave)
          std::cout << "1. Si" << '\n';
          std::cout << "2. No" << '\n';
          opcionesCaja = helper.validarInt(2);
+         system("cls");
       } while (opcionesCaja != 1);
       std::cout << "JORNADA FINALIZADA";
       break;

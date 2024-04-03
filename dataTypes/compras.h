@@ -254,7 +254,7 @@ public:
             system("pause");
          }
       } while (modeloProducto.stock < cantidad_producto_aux);
-      std::cout << "Por favor confirme la compra (Una vez confirmada se ejecutarán cambios irreversibles en la base de datos)\n";
+      std::cout << "Por favor confirme la compra (Una vez confirmada se ejecutaran cambios irreversibles en la base de datos)\n";
       std::cout << "1. Si" << '\n';
       std::cout << "2. No" << '\n';
       confirmarCompra = helper.validarInt(2);

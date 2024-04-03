@@ -209,7 +209,7 @@ public:
 
       remove("database/Cliente.bin");
       rename("database/ClienteTemp.bin", "database/Cliente.bin");
-      std::cout << "\nEliminado exitosamente el cliente " << modelo.nombre << ".";
+      std::cout << "\nEliminado exitosamente el cliente " << modelo.nombre << "." << '\n';
       system("pause");
    }
 

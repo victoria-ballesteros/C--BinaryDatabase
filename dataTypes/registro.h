@@ -19,6 +19,13 @@ class registro
 
 public:
     int auxPosicionProducto = 0, auxPosicionCliente = 0, auxPosicionCompra = 0, auxPosicionFactura = 0, auxPosicionProveedor = 0;
+    struct ProductosAgotados
+    {
+        int stock = -1;
+        int stock_min = -1;
+        int id_proveedor = -1;
+    };
+    
     struct Producto
     {
         int id = -1;

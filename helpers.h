@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <limits>
 #include <cstring>
+#include <algorithm>
 
 using namespace std;
 

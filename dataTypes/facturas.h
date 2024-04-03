@@ -104,10 +104,9 @@ public:
          std::cout << "***** Modificacion de Factura *****\n\n";
          imprimirFactura(modelo);
          std::cout << "1. ID del cliente asociado" << '\n';
-         std::cout << "2. Fecha" << '\n';
-         std::cout << "3. Salir" << '\n';
+         std::cout << "2. Salir" << '\n';
          std::cout << "\nSeleccione la opcion que desee cambiar: ";
-         cambioPropiedad = helper.validarInt(3);
+         cambioPropiedad = helper.validarInt(2);
 
          if (cambioPropiedad == 1)
          {
@@ -127,12 +126,9 @@ public:
                std::cout << "\nFactura modificada exitosamente.";
             }
          }
-         else if (cambioPropiedad == 2)
-         {
-            /*std::cout << "Fecha: ";
-            cin >> modelo.fecha;*/
-         }
-      } while (cambioPropiedad != 3);
+         
+      } while (cambioPropiedad != 2);
+      
       if (archivo.fail())
       {
          system("cls");
